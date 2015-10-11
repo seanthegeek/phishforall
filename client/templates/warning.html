@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Warning - {% block title %}{% endblock %}</title>
+    <style>
+        body {
+            max-width: 8.5in;
+            margin: 10px auto auto auto;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            border: double red 5px;
+            padding: 10px;
+        }
+
+        h1, h2 {
+            margin: 10px auto 10px auto;
+        }
+
+        h1 {
+            color: red;
+
+        }
+        .center {
+            text-align: center;
+        }
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+        p {
+            padding-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="center">Security Warning</h1>
+    <h2 class="center">{{ self.title() }}</h2>
+    <p>
+        The file that you just opened is not a document, but an executable program disguised a document.
+        Viruses and other malicious software can open documents like this as decoys, to make
+        victims believe that they have simply opened a document, while hidden malware runs.
+    </p>
+    <p>
+        To illustrate the potential capabilities of malware, the training program identified files that could have
+        easily been stolen or destroyed by an attacker; here is a random sample of your files:
+    </p>
+    <pre class="center">{{ sample_file_paths }}</pre>
+    {% block content %}{% endblock %}
+    <p>
+        If you have any questions, or to report suspicious emails or other computer threats, contact
+        <a href="mailto:{{ contact_email_address }}">{{ contact_email_address }}</a>.
+    </p>
+</body>
+</html>
