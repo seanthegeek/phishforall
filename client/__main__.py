@@ -11,7 +11,7 @@ from pprint import PrettyPrinter
 
 import netifaces
 from netaddr import EUI
-from netaddr.core import NotRegisteredError
+from netaddr.core import NotRegisteredError, AddrFormatError
 from jinja2 import Environment, FileSystemLoader
 
 from client.search import extensions, find_files
@@ -31,7 +31,7 @@ def get_active_interfaces():
             try:
                 registration = EUI(inet_addresses["mac"]).oui.registration()
                 inet_addresses["mfg"] = registration.org
-            except NotRegisteredError:
+            except (NotRegisteredError, AddrFormatError):
                 inet_addresses["mfg"] = "Unknown"
             active.append(inet_addresses)
 
