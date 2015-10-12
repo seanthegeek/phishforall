@@ -21,19 +21,22 @@ def get_active_interfaces():
     active = []
     interfaces = netifaces.interfaces()
     for iface_name in interfaces:
-        if iface_name.startswith("lo"):
+        inet_addresses = netifaces.ifaddresses(iface_name)
+        if netifaces.AF_LINK not in inet_addresses:
             continue
-        addresses = netifaces.ifaddresses(iface_name)
-        if netifaces.AF_INET in addresses:
-            inet_addresses = addresses[netifaces.AF_INET][0]
-            inet_addresses["name"] = iface_name
-            inet_addresses["mac"] = addresses[netifaces.AF_LINK][0]['addr']
-            try:
-                registration = EUI(inet_addresses["mac"]).oui.registration()
-                inet_addresses["mfg"] = registration.org
-            except (NotRegisteredError, AddrFormatError):
-                inet_addresses["mfg"] = "Unknown"
-            active.append(inet_addresses)
+        if netifaces.AF_INET not in inet_addresses:
+            continue
+        interface = inet_addresses[netifaces.AF_INET][0]
+        interface["name"] = iface_name
+        if interface["addr"].startswith("127.") or interface["addr"].startswith("169.254."):
+            continue
+        interface["mac"] = inet_addresses[netifaces.AF_LINK][0]["addr"]
+        try:
+            registration = EUI(interface["mac"]).oui.registration()
+            interface["mfg"] = registration.org
+        except (NotRegisteredError, AddrFormatError):
+            interface["mfg"] = "Unknown"
+        active.append(interface)
 
     return active
 
@@ -54,7 +57,7 @@ if platform_name == "Darwin":
     platform_version = mac_ver()[0]
     home = expanduser("~")
 elif platform_name == "Windows":
-    platform_version = win32_ver()[0]
+    platform_version = win32_ver()[1]
     home = os.environ['USERPROFILE']
 elif platform_name == "Linux":
     platform_version = uname()[3]
@@ -69,7 +72,7 @@ else:
 
 def launch_payload(payload_args):
     success = True
-    args = open_command.copy()
+    args = [open_command]
     args.append(payload_args)
     try:
         check_call(args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
