@@ -11,6 +11,7 @@ from pprint import PrettyPrinter
 
 import netifaces
 from netaddr import EUI
+from netaddr.core import NotRegisteredError
 from jinja2 import Environment, FileSystemLoader
 
 from client.search import extensions, find_files
@@ -27,8 +28,11 @@ def get_active_interfaces():
             inet_addresses = addresses[netifaces.AF_INET][0]
             inet_addresses["name"] = iface_name
             inet_addresses["mac"] = addresses[netifaces.AF_LINK][0]['addr']
-            registration = EUI(inet_addresses["mac"]).oui.registration()
-            inet_addresses["mfg"] = registration.org
+            try:
+                registration = EUI(inet_addresses["mac"]).oui.registration()
+                inet_addresses["mfg"] = registration.org
+            except NotRegisteredError:
+                inet_addresses["mfg"] = "Unknown"
             active.append(inet_addresses)
 
     return active
@@ -46,17 +50,16 @@ def get_random_files(root_path, n):
 platform_name = system()
 if platform_name == "Darwin":
     platform_name = "Mac OS"
-    open_command = ["open"]
+    open_command = "open"
     platform_version = mac_ver()[0]
     home = expanduser("~")
 elif platform_name == "Windows":
     platform_version = win32_ver()[0]
-    open_command = ['RUN', '"']
     home = os.environ['USERPROFILE']
 elif platform_name == "Linux":
     platform_version = uname()[3]
     home = expanduser("~")
-    open_command = ["xdg-open"]
+    open_command = "xdg-open"
     home = expanduser("~")
 else:
     platform_name = "Other"
@@ -67,10 +70,7 @@ else:
 def launch_payload(payload_args):
     success = True
     args = open_command.copy()
-    if type(payload_args) == list:
-        args += payload_args
-    else:
-        args.append(payload_args)
+    args.append(payload_args)
     try:
         check_call(args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     except CalledProcessError:
