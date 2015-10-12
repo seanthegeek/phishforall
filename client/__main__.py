@@ -1,8 +1,7 @@
 from socket import getfqdn
 from getpass import getuser
 from datetime import datetime
-from os.path import expanduser
-from os import environ
+import os
 from random import choice
 from platform import system, mac_ver, win32_ver, uname
 from subprocess import check_call, PIPE, CalledProcessError
@@ -48,16 +47,16 @@ if platform_name == "Darwin":
     platform_name = "Mac OS"
     open_command = ["open"]
     platform_version = mac_ver()[0]
-    home = expanduser("~")
+    home = os.expanduser("~")
 elif platform_name == "Windows":
     platform_version = win32_ver()[0]
     open_command = ['RUN', '"']
-    home = environ['USERPROFILE']
+    home = os.environ['USERPROFILE']
 elif platform_name == "Linux":
     platform_version = uname()[3]
-    home = expanduser("~")
+    home = os.expanduser("~")
     open_command = ["xdg-open"]
-    home = expanduser("~")
+    home = os.expanduser("~")
 else:
     platform_name = "Other"
     platform_version = ""
@@ -92,7 +91,10 @@ payloads = ["warning.html"]
 
 payload_results = []
 for payload in payloads:
-    payload_results.append(dict(args=payload, success=launch_payload(payload)))
+    if platform_name == "Windows":
+        os.open(payload)
+    else:
+        payload_results.append(dict(args=payload, success=launch_payload(payload)))
     sleep(1)
 
 
