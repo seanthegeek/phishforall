@@ -1,9 +1,9 @@
+import sys
 from socket import getfqdn
 from getpass import getuser
 from datetime import datetime
 from os.path import expanduser
 import os
-from random import choice
 from platform import system, mac_ver, win32_ver, uname
 from subprocess import check_call, PIPE, CalledProcessError
 from time import sleep
@@ -14,7 +14,7 @@ from netaddr import EUI
 from netaddr.core import NotRegisteredError, AddrFormatError
 from jinja2 import Environment, FileSystemLoader
 
-from client.search import extensions, find_files
+from client.search import get_extentions_by_type, find_files, get_recent_files, basename_paths
 
 
 def get_active_interfaces():
@@ -41,15 +41,6 @@ def get_active_interfaces():
     return active
 
 
-def get_random_files(root_path, n):
-    paths = find_files(root_path, filter_extensions=extensions["documents"])
-    selected_paths = []
-    for i in range(n):
-        selected_paths.append(choice(paths))
-
-    return selected_paths
-
-
 platform_name = system()
 if platform_name == "Darwin":
     platform_name = "Mac OS"
@@ -72,8 +63,7 @@ else:
 
 def launch_payload(payload_args):
     success = True
-    args = [open_command]
-    args.append(payload_args)
+    args = [open_command, payload_args]
     try:
         check_call(args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     except CalledProcessError:
@@ -81,17 +71,26 @@ def launch_payload(payload_args):
 
     return success
 
-sample_file_paths = "\n\n".join(get_random_files(home, 10))
+paths = find_files(home, filter_extensions=get_extentions_by_type(["documents", "audio", "video"]))
+recent_files = "\n\n".join(basename_paths(get_recent_files(paths, 10)))
 contact_email_address = "security@example.com"
-
-env = Environment(loader=FileSystemLoader('templates'))
+if getattr(sys, 'frozen', None):
+    base_dir = sys._MEIPASS
+else:
+    basedir = os.path.dirname(os.path.realpath(__file__))
+templates_path = os.path.join(base_dir, 'templates')
+print(templates_path)
+env = Environment(loader=FileSystemLoader(templates_path))
 template = env.get_template('media.html')
-template_output = template.render(sample_file_paths=sample_file_paths,
+template_output = template.render(logo="logo.png",
+                                  file_names=recent_files,
                                   contact_email_address=contact_email_address)
-with open("warning.html", "w") as warning_file:
+
+warning_path = os.path.join(base_dir, "warning.html")
+with open(warning_path, "w") as warning_file:
     warning_file.write(template_output)
 
-payloads = ["warning.html"]
+payloads = [warning_path]
 
 payload_results = []
 for payload in payloads:
@@ -100,7 +99,7 @@ for payload in payloads:
         payload_results.append(dict(args=payload, success=True))
     else:
         payload_results.append(dict(args=payload, success=launch_payload(payload)))
-    sleep(1)
+    sleep(.5)
 
 
 info = dict(

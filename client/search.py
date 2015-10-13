@@ -6,9 +6,7 @@ except ImportError:
 
 extensions = dict(documents=[
     "pdf",
-    "txt",
     "rtf",
-    "csv",
     "doc",
     "dot",
     "docx",
@@ -51,7 +49,6 @@ extensions = dict(documents=[
     "odt",
     "ott",
     "odm",
-    "html",
     "oth",
     "ods",
     "ots",
@@ -61,6 +58,10 @@ extensions = dict(documents=[
     "otp",
     "odf",
     "oxt"
+], plain_text=[
+    "txt",
+    "csv",
+    "html"
 ], databases=[
     "db",
     "odb",
@@ -257,17 +258,36 @@ all_extensions = []
 for ext_type in extensions:
     all_extensions += extensions[ext_type]
 
-all_extensions = list(set(all_extensions))
+all_extensions = set(all_extensions)
+
+
+def get_extentions_by_type(ext_types):
+    selected_extensions = []
+    for ext_type in ext_types:
+        selected_extensions += extensions[ext_type]
+    return set(selected_extensions)
 
 
 def find_files(root_path, filter_extensions=all_extensions):
     paths = []
     for root, dirs, files in walk(root_path):
             for file in files:
-                file_extension = file.split(".")[-1].lower()
-                if file_extension in filter_extensions:
-                    paths.append(file)
-
+                filename_parts = file.split(".")
+                if len(filename_parts) < 2:
+                    continue
+                file_extension = filename_parts[-1]
+                if file_extension.lower() in filter_extensions:
+                    paths.append(path.join(root, file))
     return paths
 
+
+def get_recent_files(paths, n=None):
+    paths = sorted(paths, key=path.getmtime, reverse=True)
+    if n:
+        paths = paths[:n]
+    return paths
+
+
+def basename_paths(paths):
+    return map(lambda x: path.basename(x), paths)
 

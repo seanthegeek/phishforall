@@ -8,17 +8,19 @@
             max-width: 8.5in;
             margin: 10px auto auto auto;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            border: double red 5px;
+            border: double #EE0000 5px;
             padding: 10px;
         }
 
         h1, h2 {
-            margin: 10px auto 10px auto;
+            margin: 20px auto 10px auto;
         }
 
-        h1 {
-            color: red;
-
+        #logo{
+            margin: auto;
+            display: block;
+            max-width: 350px;
+            height: auto;
         }
         .center {
             text-align: center;
@@ -33,7 +35,7 @@
     </style>
 </head>
 <body>
-    <h1 class="center">Security Warning</h1>
+    {% if logo %}<img src={{ logo }} alt="Logo" id="logo">{% endif %}
     <h2 class="center">{{ self.title() }}</h2>
     <p>
         The file that you just opened is not a document, but an executable program disguised a document.
@@ -42,13 +44,18 @@
     </p>
     <p>
         To illustrate the potential capabilities of malware, the training program identified files that could have
-        easily been stolen or destroyed by an attacker; here is a random sample of your files:
+        easily been stolen or destroyed by an attacker, including but not limited to:
     </p>
-    <pre class="center">{{ sample_file_paths }}</pre>
+    <pre class="center">
+        {{ file_names }}
+    </pre>
     {% block content %}{% endblock %}
     <p>
         If you have any questions, or to report suspicious emails or other computer threats, contact
         <a href="mailto:{{ contact_email_address }}">{{ contact_email_address }}</a>.
+    </p>
+    <p class="center">
+        <small>Powered by <a href="https://phishforall.com" target="_blank">Phish for All</a></small>
     </p>
 </body>
 </html>
