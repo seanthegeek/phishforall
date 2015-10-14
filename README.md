@@ -3,6 +3,7 @@
 Project status:
 
 Client: **Alpha**
+
 Server: **Planning**
 
 Phish for All makes it easy to test and train users on phishing. It generates files that look like documents, but are 
