@@ -31,11 +31,9 @@ for site_path in getsitepackages():
     test_path = path.join(site_path, "netaddr")
     if path.isdir(test_path):
         netaddr_path = test_path
+        break
 if netaddr_path is None:
     raise RuntimeError("Could not find the netaddr package in site-packages")
-
-
-netaddr_path = path.join(getsitepackages()[0], "netaddr")
 
 add_files = [
     ("templates", ""),
