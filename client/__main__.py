@@ -113,3 +113,6 @@ info = dict(
 
 pretty = PrettyPrinter()
 pretty.pprint(info)
+
+# Keep running while the payloads run; the temp directory in deleted on exit!
+sleep(10)

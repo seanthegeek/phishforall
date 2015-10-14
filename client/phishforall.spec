@@ -26,6 +26,15 @@ elif platform_name == "Darwin":
 
 block_cipher = pyi_crypto.PyiBlockCipher(key=gen_key())
 
+netaddr_path = None
+for site_path in getsitepackages():
+    test_path = path.join(site_path, "netaddr")
+    if path.isdir(test_path):
+        netaddr_path = test_path
+    if netaddr_path is None:
+        raise RuntimeError("Could not find the netaddr package in site-packages")
+
+
 netaddr_path = path.join(getsitepackages()[0], "netaddr")
 
 add_files = [
@@ -55,7 +64,7 @@ exe = EXE(pyz,
           name=name,
           debug=False,
           strip=None,
-          upx=True,
+          upx=False, # UPX triggers AV alarms
           console=True, icon=icon_path)
 
 if platform_name == "Darwin":

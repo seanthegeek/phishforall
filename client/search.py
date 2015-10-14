@@ -273,7 +273,7 @@ def find_files(root_path, filter_extensions=all_extensions):
     for root, dirs, files in walk(root_path):
             for file in files:
                 filename_parts = file.split(".")
-                if len(filename_parts) < 2:
+                if len(filename_parts) < 2 or file.startswith("~$"):
                     continue
                 file_extension = filename_parts[-1]
                 if file_extension.lower() in filter_extensions:
