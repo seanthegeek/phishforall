@@ -63,7 +63,7 @@ exe = EXE(pyz,
           debug=False,
           strip=None,
           upx=False, # UPX triggers AV alarms
-          console=True, icon=icon_path)
+          console=False, icon=icon_path)
 
 if platform_name == "Darwin":
     app = BUNDLE(exe,
