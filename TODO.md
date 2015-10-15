@@ -1,0 +1,4 @@
+- Avoid concurrent client launches
+- Standardize config file format
+- Write client/server protocol
+- Write the server!
