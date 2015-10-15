@@ -1,0 +1,7 @@
+netifaces
+netaddr
+jinja2
+pyinstaller
+cryptography
+pycrypto
+requests

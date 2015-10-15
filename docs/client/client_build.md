@@ -13,13 +13,13 @@ you are targeting.
 
     $ sudo port install py35-pip openssl
     $ cd phishforall/client
-    $ sudo pip-3.5 install -r requires-py35.txt
+    $ sudo pip-3.5 install -r requirements/py35.txt
     
 ### Debian/Ubuntu Linux
 
     $ sudo apt-get install python3-pip python3-dev libssl-dev
     $ cd phishforall/client
-    $ sudo pip-3.5 install -r requires-py3.txt
+    $ sudo pip-3.5 install -r requirements/py3.txt
     
 ## Other Linux/UNIX distributions
  
@@ -27,13 +27,15 @@ It might work
 
 Ensure Python 3, the Python 3 development headers, pip, and the openssl library are installed, then:
 
-    $ cd phishforall/client=
+If you are using Python 3.5. 
+    
+    $ cd phishforall/client
 
-    $ sudo pip-3.5 install -r requires-py35.txt
+    $ sudo pip-3.5 install -r requirements/py35.txt
 
-If you are using Python 3.5. Or, if you are using an older version of Python 3: 
+Or, if you are using an older version of Python 3: 
 
-    $ sudo pip-3.5 install -r requires-py3.txt
+    $ sudo pip3 install -r requirements/py3.txt
 
     
 ### Windows
@@ -72,8 +74,8 @@ Ensure the following are set along with the defaults:
 
 Open Power Shell as administrator. Run:
  
-     cd phishforall/client
-     pip install -r requires-py35.txt
+     cd phishforall/client/requirements
+     pip install -r py35.txt
 
 ## Building the client
 
