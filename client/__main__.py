@@ -77,7 +77,7 @@ contact_email_address = "security@example.com"
 if getattr(sys, 'frozen', None):
     base_dir = sys._MEIPASS
 else:
-    basedir = os.path.dirname(os.path.realpath(__file__))
+    base_dir = os.path.dirname(os.path.realpath(__file__))
 templates_path = os.path.join(base_dir, 'templates')
 print(templates_path)
 env = Environment(loader=FileSystemLoader(templates_path))
@@ -98,7 +98,7 @@ for payload in payloads:
         os.startfile(payload)
         payload_results.append(dict(args=payload, success=True))
     else:
-        payload_results.append(dict(args=payload, success=launch_payload(payload)))
+        payload_results.append(dict(name=payload, success=launch_payload(payload)))
     sleep(.5)
 
 
@@ -114,5 +114,5 @@ info = dict(
 pretty = PrettyPrinter()
 pretty.pprint(info)
 
-# Keep running while the payloads run; the temp directory in deleted on exit!
+# Keep running while the payloads run; the temp directory in pyinstaller deletes the temp directory on exit!
 sleep(10)

@@ -18,3 +18,10 @@ It looks and acts like a real malware dropper, which makes it an excellent pente
 source project, it is highly customisable, but it could also be easily modified to drop real malware or steal data. 
 &lt;CYA&gt; *Don't do that!* &lt;/CYA&gt;
 
+## Supported target platforms
+ 
+- Windows XP-10
+- Mac OS 10.6+
+- Debian/Ubuntu linux with a GUI
+
+It may work on other Linux/UNIX/BSD distributions as well.
